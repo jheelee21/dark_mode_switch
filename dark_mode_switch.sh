@@ -2,11 +2,11 @@
 
 # Function to check monitor setup and switch appearance mode accordingly
 check_and_set_mode() {
-    display_count=$(system_profiler SPDisplaysDataType | grep -c "Online")
+    display_count=$(system_profiler SPDisplaysDataType | grep -c "Online: Yes")
     internal_monitor=$(system_profiler SPDisplaysDataType | grep -c "Connection Type: Internal")
     dark_mode=$(osascript -e 'tell app "System Events" to tell appearance preferences to get dark mode')
 
-    if [[ $internal_monitor -lt 1 || $display_count -gt 1 ]]; then
+    if [[ ( $internal_monitor -lt 1 && $display_count -eq 1 ) || $display_count -gt 1 ]]; then
         if [[ "$dark_mode" == "false" ]]; then
             echo "External monitor detected. Switching to dark mode."
             osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
